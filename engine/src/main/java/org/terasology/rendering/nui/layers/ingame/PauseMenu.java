@@ -27,6 +27,7 @@ import org.terasology.rendering.nui.CoreScreenLayer;
 import org.terasology.rendering.nui.WidgetUtil;
 import org.terasology.rendering.nui.animation.MenuAnimationSystems;
 import org.terasology.rendering.nui.layers.mainMenu.settings.SettingsMenuScreen;
+import org.terasology.utilities.random.Random;
 
 /**
  * In-game menu that appears when the player presses `ESC` (by default) to open the menu system.
