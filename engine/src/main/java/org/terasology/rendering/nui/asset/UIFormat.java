@@ -41,6 +41,7 @@ import org.terasology.persistence.typeHandling.gson.GsonTypeSerializationLibrary
 import org.terasology.reflection.metadata.ClassMetadata;
 import org.terasology.reflection.metadata.FieldMetadata;
 import org.terasology.registry.CoreRegistry;
+import org.terasology.rendering.nui.CoreScreenLayer;
 import org.terasology.rendering.nui.LayoutHint;
 import org.terasology.rendering.nui.NUIManager;
 import org.terasology.rendering.nui.UILayout;
@@ -251,6 +252,11 @@ public class UIFormat extends AbstractAssetFileFormat<UIData> {
                         }
                     }
                 }
+            }
+
+            if (element instanceof CoreScreenLayer) {
+                ((CoreScreenLayer) element).setManager(nuiManager);
+                return element;
             }
             return element;
         }
