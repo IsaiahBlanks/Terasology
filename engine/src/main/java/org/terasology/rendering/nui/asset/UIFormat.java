@@ -254,6 +254,7 @@ public class UIFormat extends AbstractAssetFileFormat<UIData> {
                 }
             }
 
+            //This allows screens to have access to nuiManager after editing .ui file
             if (element instanceof CoreScreenLayer) {
                 ((CoreScreenLayer) element).setManager(nuiManager);
                 return element;
