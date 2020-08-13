@@ -15,9 +15,11 @@
  */
 package org.terasology.rendering.nui.layers.mainMenu.advancedGameSetupScreen;
 
+import ch.qos.logback.classic.pattern.TargetLengthBasedClassNameAbbreviator;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,19 +132,22 @@ public class AdvancedGameSetupScreen extends CoreScreenLayer {
     @Override
     public void initialise() {
         setAnimationSystem(MenuAnimationSystems.createDefaultSwipeAnimation());
-        remoteModuleRegistryUpdater = Executors.newSingleThreadExecutor()
-                .submit(moduleManager.getInstallManager().updateRemoteRegistry());
+        remoteModuleRegistryUpdater = Executors.newSingleThreadExecutor(
+                new ThreadFactoryBuilder()
+                        .setNameFormat(new TargetLengthBasedClassNameAbbreviator(36).abbreviate(getClass().getName()) + "-%d")
+                        .setDaemon(true)
+                        .build()).submit(moduleManager.getInstallManager().updateRemoteRegistry());
 
         final UIText seed = find("seed", UIText.class);
         if (seed != null) {
             seed.setText(new FastRandom().nextString(32));
         }
 
-        // skip loading module configs, limit shown modules to "augmentation" category
+        // skip loading module configs, limit shown modules to locally present ones
         selectModulesConfig = new SelectModulesConfig();
         selectModulesConfig.getSelectedStandardModuleExtensions()
                 .forEach(selectModulesConfig::unselectStandardModuleExtension);
-        selectModulesConfig.toggleStandardModuleExtensionSelected(StandardModuleExtension.IS_AUGMENTATION);
+        selectModulesConfig.toggleIsLocalOnlySelected();
 
         dependencyResolver = new DependencyResolver(moduleManager.getRegistry());
 
